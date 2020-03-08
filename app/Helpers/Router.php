@@ -36,7 +36,7 @@ class Router {
 	function match() {
 
 		foreach ($this->routes as $key => $routes) {
-				if($routes['route'] == $)
+				// if($routes['route'] == $)
 		}
 
 	}	
