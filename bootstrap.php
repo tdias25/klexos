@@ -1,12 +1,28 @@
 <?php
+
 require 'vendor/autoload.php';
-// require 'routes/routes.php';
 
-use App\Helpers\Request;
-use App\Helpers\Router;
+use App\Kernel\Http\Request;
+use App\Kernel\Http\Routing\Router;
 
-$router = new Router(new Request());
-$router->map('/user/[i:id]', 'UserController@show');
-$router->match();
+$request = new Request;
+$router = new Router($request);
 
-print_r($router->match());
+$router->setBasePath('klexos');
+
+$router->on('GET', '/', function() {});
+$router->on('GET', 'users/[i]', 'UsersController@show');
+$router->on('GET', 'users', function() {
+    return 123;
+});
+$router->on('POST', 'user/store', function() {});
+
+$match = $router->match();
+
+// dump($router->getRoutes());
+
+if($match == true) {
+    dump($match);
+} else {
+    dump($request->getUri());
+}
