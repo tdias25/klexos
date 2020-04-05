@@ -6,10 +6,9 @@ use App\Kernel\Http\Request;
 use App\Kernel\Http\Routing\Router;
 
 $request = new Request;
-
 $router = new Router($request);
 
-// $router->setBasePath('klexos');
+$router->setBasePath('klexos');
 
 $router->on('GET', '/', function() {});
 $router->on('GET', 'users/[i]', 'UsersController@show');

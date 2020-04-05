@@ -1,33 +1,7 @@
 <?php
 
-use App\Interfaces\Routing\RouterInterface;
+use App\Kernel\Http\Routing\BaseRoute;
 
-class Route implements RouterInterface
+class Route extends BaseRoute
 {
-    private $method;
-    private $uri;
-    private $params = [];
-    private $callback;
-    private $middlewares = [];
-
-    public function setMethod(): self
-    {
-    }
-
-    public function setUri(): self
-    {
-    }
-
-    public function setParams(): self
-    {
-    }
-
-    public function setCallback(): self
-    {
-    }
-
-    public function setMiddleware(): self
-    {
-    }
-    
 }
