@@ -1,18 +1,16 @@
 <?php
 
 namespace App\Kernel\Http\Routing;
-
 use App\Kernel\Http\Routing\BaseRoute;
-use App\Kernel\ReflectionResolver;
+use App\Kernel\Http\Routing\RouterLoader;
 
 abstract class BaseRouter 
 {
     private $routes = [];
-    private $request;
     
-    public function __construct(BaseRequest $request)
+    public function __construct(?RouterLoader $routerLoader)
     {
-        $this->request = $request;
+        $this->routes = array_merge($this->routes, $routerLoader->getCollection());
     }
     
     public function addRoute(BaseRoute $route): self
@@ -20,48 +18,42 @@ abstract class BaseRouter
         $this->routes[] = $route;
     }
 
-    public function matchHandler(Route $route)
+    public function runCallback(Route $route)
     {
 
-        if(!empty($route->getMiddlewares())) {
+        $callback = $route->getCallback();
 
+        if( is_string($callback) ) {
+
+            list($controller, $method) = explode('@', $callback);
         }
 
-        if( is_string($route->getCallback()) ) {
-
-            list($controller, $method) = explode('@', $route->getCallback());
-
-            // $reflectionClass = new ReflectionClass($controller);
-
-        }
-
-        if( is_callable($route->getCallback()) ) {
-            return $route->getCallback()();
+        if( is_callable($callback) ) {
+            $callback();
         }
 
     }
     
-    public function match(): ?Route
+    public function match(BaseRequest $request): ?Route
     {
         foreach($this->routes as $route) {
             
-            if( !\in_array($this->request->getMethod(), $route->getMethods()) ) {
+            if( !\in_array($request->getMethod(), $route->getMethod()) ) {
                 continue;
             }
 
             $pattern = sprintf('~^%s$~', $route->getUri());
             
-            if( preg_match($pattern, $this->request->getUri(), $matches) ) {
+            if( preg_match($pattern, $request->getUri(), $matches) ) {
                 
                 array_shift($matches);
 
                 $route->setParams($matches);
-                
-                $this->matchHandler($route);
+                $this->runCallback($route);
             }
             
         }
         
-        return false;
+        return null;
     }
 }

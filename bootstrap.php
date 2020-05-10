@@ -1,7 +1,5 @@
 <?php
 
-require 'vendor/autoload.php';
-
 use App\Kernel\Http\Request;
 use App\Kernel\Http\Routing\Router;
 
@@ -10,18 +8,19 @@ $router = new Router($request);
 
 $router->setBasePath('klexos');
 
-$router->on('GET', '/', function() {});
+$router->on('GET', '/', function () {
+    echo 'iiiiiiiiii';
+});
 $router->on('GET', 'users/[i]', 'UsersController@show');
-$router->on('GET', 'users', function() {
+$router->on('GET', 'users', function () {
     return 123;
 });
-$router->on('POST', 'user/store', function() {});
+$router->on('POST', 'user/store', function () {
+});
 
 $match = $router->match();
 
-// dump($router->getRoutes());
-
-if($match == true) {
+if ($match == true) {
     dump($match);
 } else {
     dump($request->getUri());

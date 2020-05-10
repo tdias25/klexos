@@ -48,7 +48,7 @@ abstract class BaseRequest {
 
 	public function setMethod($method = null): void
 	{
-		$this->method = $method ?? @$_SERVER['REQUEST_METHOD'];
+		$this->method = $method ?? $_SERVER['REQUEST_METHOD'];
 	}
 
 	public function getMethod(): string
@@ -58,7 +58,7 @@ abstract class BaseRequest {
 
 	public function setUri($uri = null): void
 	{
-		$this->uri = $uri ?? @$_SERVER['REQUEST_URI'];
+		$this->uri = $uri ?? $_SERVER['REQUEST_URI'];
 	}
 
 	public function getUri(): string

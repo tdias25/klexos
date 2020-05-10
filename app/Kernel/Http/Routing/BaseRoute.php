@@ -1,15 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Kernel\Http\Routing;
 
-abstract class BaseRoute 
+use App\Kernel\Http\Routing\UriFilter;
+
+abstract class BaseRoute
 {
-    private $methods = [];
+    private $method;
     private $name;
     private $uri;
     private $params = [];
     private $callback;
     private $middlewares = [];
+    private $uriFilters = [];
 
     public function setName(string $name): self
     {
@@ -17,20 +21,9 @@ abstract class BaseRoute
         return self;
     }
 
-    public function setMethods($methods): self
+    public function setMethod(string $method): self
     {
-        if(!\is_array($methods) || !\is_string($methods)) {
-            throw InvalidArgumentException('method should be an array or a string');
-        }
-
-        if(is_array($methods)) {
-            $this->methods = array_merge($methods);
-        }
-
-        if(is_string($methods)) {
-            $this->methods[] = $methods;
-        }
-
+        $this->method = $method;
         return self;
     }
 
@@ -43,6 +36,21 @@ abstract class BaseRoute
     {
         $this->uri = $uri;
         return self;
+    }
+
+    public function filterUri(UriFilter $filter): string
+    {
+        return $filter->filter($this->uri);
+    }
+
+    public function setUriFilter(UriFilter $filter)
+    {
+        $this->uriFilters[] = $filter;
+    }
+
+    public function getUriFilters()
+    {
+        return $this->uriFilters;
     }
 
     public function getUri(): string
@@ -63,22 +71,22 @@ abstract class BaseRoute
 
     public function setCallback($callback): self
     {
-        if(!\is_callable($callback) || !\is_string($callback)) {
-            throw InvalidArgumentException('callback should be a callable or a controller/method string');
+        if (!\is_callable($callback) || !\is_string($callback)) {
+            throw InvalidArgumentException('callback should be a callable or a controller@method string');
         }
-        $this->callback = $callback;
 
+        $this->callback = $callback;
         return self;
     }
 
     public function setMiddleware($middleware): self
     {
-        if(is_array($methods)) {
-            $this->methods = array_merge($methods);
+        if (is_array($middleware)) {
+            $this->$middlewares = array_merge($this->middlewares);
         }
 
-        if(is_string($methods)) {
-            $this->methods[] = $methods;
+        if (is_string($middleware)) {
+            $this->middlewares[] = $middleware;
         }
 
         return self;
