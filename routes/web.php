@@ -1,5 +1,16 @@
 <?php
 
-Route::get('users/[i:id]', function(){
+use App\Kernel\Http\Routing\Facade\RouteFactory as Route;
 
-})->namespace('aaa');
+Route::get('users/[i:id]', function(){
+    echo phpversion();
+});
+
+Route::get('users', function(){
+
+    $connectin = DabatabeFactory::create();
+    $userModel = new userModel($connectin);
+
+    $getAll = $userModel->getAll();
+    
+});

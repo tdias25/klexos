@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Kernel\Http\Routing;
+namespace App\Kernel\Http\Routing\UriFilters;
 
-class DefaultUriFilter implements UriFilter
+use App\Kernel\Http\Routing\UriFilters\UriFilterInterface;
+
+class RegexUriFilter implements UriFilterInterface
 {
     private $matchTypes = [
 		'i'  => '[0-9]++',

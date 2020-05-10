@@ -2,13 +2,13 @@
 
 namespace App\Kernel\Http\Routing;
 use App\Kernel\Http\Routing\BaseRoute;
-use App\Kernel\Http\Routing\RouterLoader;
+use App\Kernel\Http\Routing\Adapters\RoutesLoaderInterface;
 
 abstract class BaseRouter 
 {
     private $routes = [];
     
-    public function __construct(?RouterLoader $routerLoader)
+    public function __construct(?RoutesLoaderInterface $routerLoader)
     {
         $this->routes = array_merge($this->routes, $routerLoader->getCollection());
     }
@@ -18,9 +18,9 @@ abstract class BaseRouter
         $this->routes[] = $route;
     }
 
-    public function runCallback(Route $route)
+    public function dispatch(Route $route)
     {
-
+        
         $callback = $route->getCallback();
 
         if( is_string($callback) ) {
@@ -49,7 +49,7 @@ abstract class BaseRouter
                 array_shift($matches);
 
                 $route->setParams($matches);
-                $this->runCallback($route);
+                $this->dispatch($route);
             }
             
         }

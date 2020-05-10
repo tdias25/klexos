@@ -1,44 +1,45 @@
 <?php
 
-namespace App\Kernel\Http\Routing;
+namespace App\Kernel\Http\Routing\Builders;
 
-use App\Kernel\Http\Routing\DefaultMatchFilter;
+use App\Kernel\Http\Routing\Route;
+use App\Kernel\Http\Routing\UriFilters\RegexUriFilter;
 
-class RouteBuilder implements BaseRouteBuilder {
+class RouteBuilder  {
 
     private $route;
 
     public function __construct()
     {
         $this->route = new Route;
-        $this->route->setMatchFilter(new DefaultUriFilter);
+        $this->route->setUriFilter(new RegexUriFilter);
     }
 
-    public function route($route): self
+    public function setUri($route): self
     {
         $this->route->setUri($route);
         return $this;
     }
     
-    public function method($method): self
+    public function setMethod($method): self
     {
         $this->route->setMethod($method);
         return $this;
     }
 
-    public function callback($callback): self
+    public function setCallback($callback): self
     {
         $this->route->setCallback($callback);
         return $this;
     }
     
-    public function middleware($middleware): self
+    public function setMiddleware($middleware): self
     {
         $this->route->setMiddleware($middleware);
         return $this;
     }
 
-    public function UriFilter($uriFilter)
+    public function setUriFilter($uriFilter)
     {
         $this->route->setUriFilter($uriFilter);
     }

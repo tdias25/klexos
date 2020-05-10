@@ -1,7 +1,11 @@
 <?php
-use App\Kernel\Http\Routing\Facade\RouteFactory as Route;
 
-class StaticRouteLoader implements RouteLoader
+namespace App\Kernel\Http\Routing\Adapters;
+
+use App\Kernel\Http\Routing\Facade\RouteFactory as Route;
+use App\Kernel\Http\Routing\Adapters\RoutesLoaderInterface;
+
+class StaticRouteLoader implements RoutesLoaderInterface
 {
     private $routesFile;
     private $routes;
@@ -12,23 +16,35 @@ class StaticRouteLoader implements RouteLoader
         $this->loadRoutes();
     }
 
-    public function setRoutesFile(string $file): self
+    public function setRoutesFile(string $routesFile)
     {
-        $file = base_path($file);
+        $routesFile = \base_path($routesFile);
 
-        if(!file_exists($file)) {
+        if(!file_exists($routesFile)) {
             throw new \InvalidArgumentException('routes file could not be found!');
         }
+
+        $this->routesFiles = $routesFile;
+    }
+
+    public function getRoutesFile()
+    {
+        return $this->routesFiles;
     }
 
     public function loadRoutes()
-    {
-        require_once $this->file;
+    {   
+        require $this->getRoutesFile();
         $this->routes = Route::collection();
 
     }
 
-    public function getColletion(): RouteCollection
+    public function getCollection(): RouteCollection
+    {
+        return $this->routes;
+    }
+
+    public function getRoutes()
     {
         return $this->routes;
     }

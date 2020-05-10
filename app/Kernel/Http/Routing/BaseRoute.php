@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Kernel\Http\Routing;
 
-use App\Kernel\Http\Routing\UriFilter;
+use App\Kernel\Http\Routing\UriFilters\UriFilterInterface;
 
 abstract class BaseRoute
 {
@@ -18,13 +18,13 @@ abstract class BaseRoute
     public function setName(string $name): self
     {
         $this->name = $name;
-        return self;
+        return $this;
     }
 
     public function setMethod(string $method): self
     {
         $this->method = $method;
-        return self;
+        return $this;
     }
 
     public function getMethod(): string
@@ -35,15 +35,10 @@ abstract class BaseRoute
     public function setUri(string $uri): self
     {
         $this->uri = $uri;
-        return self;
+        return $this;
     }
 
-    public function filterUri(UriFilter $filter): string
-    {
-        return $filter->filter($this->uri);
-    }
-
-    public function setUriFilter(UriFilter $filter)
+    public function setUriFilter(UriFilterInterface $filter)
     {
         $this->uriFilters[] = $filter;
     }
@@ -61,7 +56,7 @@ abstract class BaseRoute
     public function setParams(array $params): self
     {
         $this->params = $params;
-        return self;
+        return $this;
     }
 
     public function getParams(): array
@@ -71,12 +66,12 @@ abstract class BaseRoute
 
     public function setCallback($callback): self
     {
-        if (!\is_callable($callback) || !\is_string($callback)) {
-            throw InvalidArgumentException('callback should be a callable or a controller@method string');
+        if (!\is_callable($callback) && !\is_string($callback)) {
+            throw new \InvalidArgumentException('Callback should be a Callable or a controller@action string');
         }
 
         $this->callback = $callback;
-        return self;
+        return $this;
     }
 
     public function setMiddleware($middleware): self
@@ -89,6 +84,6 @@ abstract class BaseRoute
             $this->middlewares[] = $middleware;
         }
 
-        return self;
+        return $this;
     }
 }
