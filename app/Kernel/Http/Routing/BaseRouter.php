@@ -8,17 +8,18 @@ abstract class BaseRouter
 {
     private $routes = [];
     
-    public function __construct(?RoutesLoaderInterface $routerLoader)
+    public function __construct(?RoutesLoaderInterface $routesLoader)
     {
-        $this->routes = array_merge($this->routes, $routerLoader->getCollection());
+        $this->routes = array_merge($this->routes, $routesLoader->getCollection());
     }
     
     public function addRoute(BaseRoute $route): self
     {
         $this->routes[] = $route;
+        return $this;
     }
 
-    public function dispatch(Route $route)
+    public function dispatch(Route $route): void
     {
         
         $callback = $route->getCallback();
@@ -29,7 +30,7 @@ abstract class BaseRouter
         }
 
         if( is_callable($callback) ) {
-            $callback();
+            $callback($route->getParams());
         }
 
     }
@@ -46,9 +47,9 @@ abstract class BaseRouter
             
             if( preg_match($pattern, $request->getUri(), $matches) ) {
                 
-                array_shift($matches);
+                // array_shift($matches);
 
-                $route->setParams($matches);
+                $route->setParams($matches[1]);
                 $this->dispatch($route);
             }
             

@@ -16,6 +16,11 @@ class RouteFactory
         'OPTIONS'
     ];
 
+    public function __construct()
+    {
+        self::$routes = new RouteCollection;
+    }
+
     public static function __callStatic($method, $args)
     {
         if (!\in_array(\strtoupper($method), self::$allowedMethods)) {
@@ -25,6 +30,26 @@ class RouteFactory
         $route = new RouteBuilder;
         self::$routes[] = $route;
 
+        // self::$routes->add($route);
+
+
+        return $route->setUri($args[0])
+            ->setMethod(\strtoupper($method))
+            ->setCallback($args[1]);
+    }
+
+    public static function resource($method, $args)
+    {
+        if (!\in_array(\strtoupper($method), self::$allowedMethods)) {
+            throw new MethodNotAllowedException('Http method not allowed');
+        }
+
+        $route = new ResourceRouteBuilder;
+        self::$routes[] = $route;
+
+        // self::$routes->add($route);
+
+
         return $route->setUri($args[0])
             ->setMethod(\strtoupper($method))
             ->setCallback($args[1]);
@@ -33,5 +58,6 @@ class RouteFactory
     public static function collection()
     {
         return self::$routes;
+        // return self::$routes->getCollection();
     }
 }

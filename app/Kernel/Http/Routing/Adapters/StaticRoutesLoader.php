@@ -5,7 +5,7 @@ namespace App\Kernel\Http\Routing\Adapters;
 use App\Kernel\Http\Routing\Facade\RouteFactory as Route;
 use App\Kernel\Http\Routing\Adapters\RoutesLoaderInterface;
 
-class StaticRouteLoader implements RoutesLoaderInterface
+class StaticRoutesLoader implements RoutesLoaderInterface
 {
     private $routesFile;
     private $routes;
@@ -35,7 +35,7 @@ class StaticRouteLoader implements RoutesLoaderInterface
     public function loadRoutes()
     {   
         require $this->getRoutesFile();
-        $this->routes = Route::collection();
+        $this->routes = Route::getCollection();
 
     }
 

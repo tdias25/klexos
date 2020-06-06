@@ -11,6 +11,7 @@ use App\Kernel\Http\Routing\Adapters\StaticRouteLoader;
 // $router = new Router($request);
 
 $staticRouteLoader = new StaticRouteLoader('routes/web.php');
+// $arrayRoutesLoader = new ArrayRoutesLoader('routes/array.php');
 $Router = new Router($staticRouteLoader);
 //     echo '<pre>';
 // print_r($routes);

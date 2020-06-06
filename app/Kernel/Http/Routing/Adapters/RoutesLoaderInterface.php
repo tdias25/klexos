@@ -7,4 +7,5 @@ namespace App\Kernel\Http\Routing\Adapters;
 interface RoutesLoaderInterface
 {
     function getCollection();
+    // function setRoutes();
 }
