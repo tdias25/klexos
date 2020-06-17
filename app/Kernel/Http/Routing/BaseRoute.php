@@ -2,9 +2,9 @@
 
 namespace App\Kernel\Http\Routing;
 
-abstract class BaseRoute 
+abstract class BaseRoute
 {
-    private $methods = [];
+    private $method;
     private $name;
     private $uri;
     private $params = [];
@@ -14,24 +14,18 @@ abstract class BaseRoute
     public function setName(string $name): self
     {
         $this->name = $name;
-        return self;
+        return $this;
     }
 
-    public function setMethods($methods): self
+    public function getName(): string
     {
-        if(!\is_array($methods) || !\is_string($methods)) {
-            throw InvalidArgumentException('method should be an array or a string');
-        }
+        return $this->name;
+    }
 
-        if(is_array($methods)) {
-            $this->methods = array_merge($methods);
-        }
-
-        if(is_string($methods)) {
-            $this->methods[] = $methods;
-        }
-
-        return self;
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
+        return $this;
     }
 
     public function getMethod(): string
@@ -42,7 +36,7 @@ abstract class BaseRoute
     public function setUri(string $uri): self
     {
         $this->uri = $uri;
-        return self;
+        return $this;
     }
 
     public function getUri(): string
@@ -53,7 +47,7 @@ abstract class BaseRoute
     public function setParams(array $params): self
     {
         $this->params = $params;
-        return self;
+        return $this;
     }
 
     public function getParams(): array
@@ -63,24 +57,23 @@ abstract class BaseRoute
 
     public function setCallback($callback): self
     {
-        if(!\is_callable($callback) || !\is_string($callback)) {
-            throw InvalidArgumentException('callback should be a callable or a controller/method string');
+        if (!\is_callable($callback) || !\is_string($callback)) {
+            throw new \InvalidArgumentException('callback should be a callable or a controller@method string');
         }
+
+        if(is_string($callback)) {
+
+            $pattern = '[\w]+\@[\w]+';
+
+        }
+   
         $this->callback = $callback;
 
-        return self;
+        return $this;
     }
 
-    public function setMiddleware($middleware): self
+    public function getCallback(): mixed
     {
-        if(is_array($methods)) {
-            $this->methods = array_merge($methods);
-        }
-
-        if(is_string($methods)) {
-            $this->methods[] = $methods;
-        }
-
-        return self;
+        return $this->callback;
     }
 }
