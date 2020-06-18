@@ -10,6 +10,14 @@ abstract class BaseRoute
     private $acceptedMethods = [
         'POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'
     ];
+    
+    /**
+    * @var array
+    */
+    private $uriMatchTypes = [
+        '[i]' => '[0-9]',
+        '[s]' => '[a-zA-Z]'
+    ];
 
     /**
      * @var string
@@ -36,22 +44,42 @@ abstract class BaseRoute
      */
     private $handler;
 
+    /**
+     * @return array
+     */
+    private function getUriMatchTypes(): array
+    {
+        return $this->getUriMatchTypes;
+    }
+
+    /**
+     * @return array
+     */
     private function getAcceptedMethods(): array
     {
         return $this->acceptedMethods;
     }
 
+    /**
+     * @param string
+     */
     public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * @param string
+     */
     public function setMethod(string $method): self
     {
         if (!in_array(strtoupper($method), $this->getAcceptedMethods())) {
@@ -62,6 +90,9 @@ abstract class BaseRoute
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return $this->method;
@@ -93,6 +124,9 @@ abstract class BaseRoute
         return $this;
     }
 
+    /**
+     * 
+     */
     public function getArguments(): array
     {
         return $this->arguments;
@@ -123,5 +157,17 @@ abstract class BaseRoute
     public function getHandler()
     {
         return $this->handler;
+    }
+
+    /**
+     * @param string
+     */
+    public function filterUri(string $uri): string
+    {
+        foreach($this->getUriMatchTypes() as $key => $pattern) {
+            // $uri = str_replace();
+        }
+
+        return $uri;
     }
 }

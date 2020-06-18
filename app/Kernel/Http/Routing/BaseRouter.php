@@ -5,63 +5,79 @@ namespace App\Kernel\Http\Routing;
 use App\Kernel\Http\Routing\BaseRoute;
 use App\Kernel\ReflectionResolver;
 
-abstract class BaseRouter 
+abstract class BaseRouter
 {
-    private $routes = [];
+    /**
+     * @var array
+     */
+    private $routesCollection = [];
+
+    /**
+     * @var RequestInterface
+     */
     private $request;
     
-    public function __construct(BaseRequest $request)
+    public function __construct(?RoutesLoaderInterface $routesLoader)
     {
-        $this->request = $request;
+        if ($routesLoader) {
+            $this->routes = array_merge($this->getRoutes(), $routesLoader->getRoutes());
+        }
     }
     
+    /**
+     * @param BaseRoute
+     */
     public function addRoute(BaseRoute $route): self
     {
-        $this->routes[] = $route;
+        $this->routesCollection[] = $route;
     }
 
-    public function matchHandler(Route $route)
+    /**
+     * @return array
+     */
+    public function getRoutes(): array
     {
+        return $this->routesCollection;
+    }
 
-        if(!empty($route->getMiddlewares())) {
+    /**
+     * @return void
+     */
+    public function dispatch(BaseRoute $route)
+    {
+        $handler = $route->getHandler();
 
-        }
-
-        if( is_string($route->getCallback()) ) {
-
-            list($controller, $method) = explode('@', $route->getCallback());
+        if (\is_string($route->getHandler())) {
+            list($controller, $method) = explode('@', $handler);
 
             // $reflectionClass = new ReflectionClass($controller);
-
         }
 
-        if( is_callable($route->getCallback()) ) {
-            return $route->getCallback()();
+        if (is_callable($handler)) {
+            $handler();
         }
-
     }
     
-    public function match(): ?Route
+    /**
+     * @param RequestInterface
+     */
+    public function match(RequestInterface $request): ?Route
     {
-        foreach($this->routes as $route) {
-            
-            if( !\in_array($this->request->getMethod(), $route->getMethods()) ) {
+        foreach ($this->getRoutes() as $route) {
+           
+            if (!\in_array($this->request->getMethod(), $route->getMethod())) {
                 continue;
             }
 
             $pattern = sprintf('~^%s$~', $route->getUri());
             
-            if( preg_match($pattern, $this->request->getUri(), $matches) ) {
+            if (preg_match($pattern, $this->request->getUri(), $matches)) {
                 
-                array_shift($matches);
-
-                $route->setParams($matches);
-                
-                $this->matchHandler($route);
+                $route->setArguments($matches[1]);
+                $this->dispatch($route);
             }
-            
         }
         
-        return false;
+        return null;
     }
 }
