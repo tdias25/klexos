@@ -1,3 +1,3 @@
 <?php
 
-namespace App\Kernel\Model;
+namespace App\Kernel;
