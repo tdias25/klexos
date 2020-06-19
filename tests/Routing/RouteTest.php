@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use App\Kernel\Http\Routing\Route;
@@ -89,6 +90,19 @@ class RouteTest extends TestCase
             'name' => 'dummy'
         ];
 
-        $this->assertEquals($this->route->getArguments(), $expected);
+        $this->assertSame($this->route->getArguments(), $expected);
+    }
+
+    public function test_if_route_uri_is_getting_filtered_with_regex()
+    {
+        $this->route->setUri('users/[i]');
+        $expected = 'users/[0-9]+';
+
+        $this->assertSame($expected, $this->route->getUri());
+
+        $this->route->setUri('users/[a]');
+        $expected = 'users/[0-9A-Za-z]+';
+
+        $this->assertSame($expected, $this->route->getUri());
     }
 }

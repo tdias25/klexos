@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Kernel\Http\Routing;
 
@@ -15,8 +16,8 @@ abstract class BaseRoute
     * @var array
     */
     private $uriMatchTypes = [
-        '[i]' => '[0-9]',
-        '[s]' => '[a-zA-Z]'
+        '[i]'  => '[0-9]+',
+        '[a]'  => '[0-9A-Za-z]+',
     ];
 
     /**
@@ -49,7 +50,7 @@ abstract class BaseRoute
      */
     private function getUriMatchTypes(): array
     {
-        return $this->getUriMatchTypes;
+        return $this->uriMatchTypes;
     }
 
     /**
@@ -103,7 +104,7 @@ abstract class BaseRoute
      */
     public function setUri(string $uri): self
     {
-        $this->uri = $uri;
+        $this->uri = $this->filterUri($uri);
         return $this;
     }
 
@@ -125,7 +126,7 @@ abstract class BaseRoute
     }
 
     /**
-     * 
+     *
      */
     public function getArguments(): array
     {
@@ -141,10 +142,11 @@ abstract class BaseRoute
             throw new \InvalidArgumentException('handler should be a callable or a controller@method string');
         }
 
-        // if (is_string($handler)) {
-        //     $pattern = '[\w]+\@[\w]+';
-        //     throw new \InvalidArgumentException('handler is not a valid controller@action string');
-        // }
+        if (is_string($handler)) {
+            if (!preg_match('~[\D][\w]+\@[\D][\w]+~', $handler)) {
+                throw new \InvalidArgumentException('handler is not a valid controller@action string');
+            }
+        }
    
         $this->handler = $handler;
 
@@ -164,8 +166,8 @@ abstract class BaseRoute
      */
     public function filterUri(string $uri): string
     {
-        foreach($this->getUriMatchTypes() as $key => $pattern) {
-            // $uri = str_replace();
+        foreach ($this->getUriMatchTypes() as $key => $pattern) {
+            $uri = str_replace($key, $pattern, $uri);
         }
 
         return $uri;
