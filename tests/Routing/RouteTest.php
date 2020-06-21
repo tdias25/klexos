@@ -37,7 +37,7 @@ class RouteTest extends TestCase
     public function test_if_method_is_a_valid_http_verb()
     {
         $this->route->setMethod('post');
-        $this->assertEquals($this->route->getMethod(), 'post');
+        $this->assertEquals($this->route->getMethod(), 'POST');
     }
     
     public function test_if_method_is_not_a_valid_http_verb()
@@ -96,12 +96,12 @@ class RouteTest extends TestCase
     public function test_if_route_uri_is_getting_filtered_with_regex()
     {
         $this->route->setUri('users/[i]');
-        $expected = 'users/[0-9]+';
+        $expected = 'users/([0-9]+)';
 
         $this->assertSame($expected, $this->route->getUri());
 
         $this->route->setUri('users/[a]');
-        $expected = 'users/[0-9A-Za-z]+';
+        $expected = 'users/([0-9A-Za-z]+)';
 
         $this->assertSame($expected, $this->route->getUri());
     }

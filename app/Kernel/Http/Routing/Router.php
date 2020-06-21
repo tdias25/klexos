@@ -4,5 +4,4 @@ namespace App\Kernel\Http\Routing;
 
 class Router extends BaseRouter
 {
-
 }

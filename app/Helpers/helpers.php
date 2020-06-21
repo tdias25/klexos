@@ -2,6 +2,6 @@
 
 function dump($what) {
     echo '<pre>';
-    print_r($what);
+    var_dump($what);
     exit;
 }

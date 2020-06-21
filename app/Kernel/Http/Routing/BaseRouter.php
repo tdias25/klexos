@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Kernel\Http\Routing;
 
-use App\Kernel\Http\Routing\BaseRoute;
-use App\Kernel\ReflectionResolver;
+use App\Kernel\Http\Messages\RequestInterface;
+use App\Kernel\Http\Routing\RoutesLoaderInterface;
+use App\Kernel\Http\Exceptions\RouteNotFoundException;
 
 abstract class BaseRouter
 {
@@ -17,23 +19,29 @@ abstract class BaseRouter
      */
     private $request;
     
-    public function __construct(?RoutesLoaderInterface $routesLoader)
+    /**
+     * @param RoutesLoaderInterface
+     */
+    public function __construct(?RoutesLoaderInterface $routesLoader = null)
     {
         if ($routesLoader) {
-            $this->routes = array_merge($this->getRoutes(), $routesLoader->getRoutes());
+            $this->routesCollection = array_merge(
+                $this->getRoutes(),
+                $routesLoader->getRoutes()
+            );
         }
     }
     
     /**
      * @param BaseRoute
      */
-    public function addRoute(BaseRoute $route): self
+    public function addRoute(BaseRoute $route): void
     {
         $this->routesCollection[] = $route;
     }
 
     /**
-     * @return array
+     * @return array<BaseRoute>
      */
     public function getRoutes(): array
     {
@@ -43,14 +51,12 @@ abstract class BaseRouter
     /**
      * @return void
      */
-    public function dispatch(BaseRoute $route)
+    public function dispatch(BaseRoute $route): void
     {
         $handler = $route->getHandler();
 
         if (\is_string($route->getHandler())) {
             list($controller, $method) = explode('@', $handler);
-
-            // $reflectionClass = new ReflectionClass($controller);
         }
 
         if (is_callable($handler)) {
@@ -60,24 +66,24 @@ abstract class BaseRouter
     
     /**
      * @param RequestInterface
+     * @throws RouteNotFoundException
      */
-    public function match(RequestInterface $request): ?Route
+    public function match(RequestInterface $request): Route
     {
         foreach ($this->getRoutes() as $route) {
-           
-            if (!\in_array($this->request->getMethod(), $route->getMethod())) {
+            if ($request->getMethod() !== $route->getMethod()) {
                 continue;
             }
 
             $pattern = sprintf('~^%s$~', $route->getUri());
             
-            if (preg_match($pattern, $this->request->getUri(), $matches)) {
+            if (preg_match_all($pattern, $request->getUri(), $matches)) {
+                $route->setArguments($matches[1] ?? []);
                 
-                $route->setArguments($matches[1]);
                 $this->dispatch($route);
             }
         }
-        
-        return null;
+
+        throw new RouteNotFoundException('Route not Found', 404);
     }
 }

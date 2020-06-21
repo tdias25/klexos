@@ -16,8 +16,8 @@ abstract class BaseRoute
     * @var array
     */
     private $uriMatchTypes = [
-        '[i]'  => '[0-9]+',
-        '[a]'  => '[0-9A-Za-z]+',
+        '[i]'  => '([0-9]+)',
+        '[a]'  => '([0-9A-Za-z]+)',
     ];
 
     /**
@@ -87,7 +87,7 @@ abstract class BaseRoute
             throw new \InvalidArgumentException("{$method} is not a valid method");
         }
 
-        $this->method = $method;
+        $this->method = strtoupper($method);
         return $this;
     }
 
