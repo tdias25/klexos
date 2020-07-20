@@ -1,7 +1,28 @@
 <?php
+
 require 'vendor/autoload.php';
 
-// $request = new Request;
+use App\Kernel\Http\Request;
+use App\Kernel\Http\Routing\Route;
+use App\Kernel\Http\Routing\Router;
 
-// $app = new App($request);
-// $app->run();
+// $ArrayRoutesLoader = new ArrayRoutesLoader('routes/web_array.php');
+
+$Route = new Route;
+$Route->setMethod('GET');
+$Route->setUri('/');
+$Route->setName('home');
+$Route->setHandler(function () {
+    echo phpinfo();
+});
+
+$Request = new Request;
+
+$Router = new Router;
+$Router->addRoute($Route);
+
+try {
+    $Router->match($Request);
+} catch (\Throwable $e) {
+    echo $e->getMessage();
+}

@@ -20,18 +20,16 @@ abstract class BaseRouter
     private $request;
     
     /**
-     * @param RoutesLoaderInterface
+     * @param RouteCollection
      */
-    public function __construct(?RoutesLoaderInterface $routesLoader = null)
+    public function loadRoutes(RoutesLoader $routesLoader): void
     {
-        if ($routesLoader) {
-            $this->routesCollection = array_merge(
-                $this->getRoutes(),
-                $routesLoader->getRoutes()
-            );
-        }
+        $this->routesCollection = array_merge(
+            $this->getRoutes(),
+            $routesLoader->getRoutes()
+        );
     }
-    
+
     /**
      * @param BaseRoute
      */
@@ -52,7 +50,7 @@ abstract class BaseRouter
      * @return void
      */
     public function dispatch(BaseRoute $route): void
-    {
+    {   
         $handler = $route->getHandler();
 
         if (\is_string($route->getHandler())) {

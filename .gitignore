@@ -2,3 +2,7 @@ vendor/
 AltoRouter.php
 teste.php
 router_test.php
+access.log
+error.log
+.phpunit.result.cache
+.php_cs.cache
