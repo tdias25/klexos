@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace App\Kernel\Http\Routing;
 
-abstract class BaseRoute
+abstract class AbstractRoute
 {
     /**
-    * @var array
-    */
-    private $acceptedMethods = [
+     * @var array
+     */
+    const VALID_METHODS = [
         'POST', 'GET', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'
     ];
-    
+
     /**
-    * @var array
-    */
-    private $uriMatchTypes = [
-        '[i]'  => '([0-9]+)',
-        '[a]'  => '([0-9A-Za-z]+)',
+     * @var array
+     */
+    const URI_MATCH_TYPES = [
+        '[i]' => '([0-9]+)',
+        '[a]' => '([0-9A-Za-z]+)',
     ];
 
     /**
@@ -50,7 +50,7 @@ abstract class BaseRoute
      */
     private function getUriMatchTypes(): array
     {
-        return $this->uriMatchTypes;
+        return self::URI_MATCH_TYPES;
     }
 
     /**
@@ -58,16 +58,16 @@ abstract class BaseRoute
      */
     private function getAcceptedMethods(): array
     {
-        return $this->acceptedMethods;
+        return self::VALID_METHODS;
     }
 
     /**
      * @param string
+     * @return void
      */
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return $this;
     }
 
     /**
@@ -80,15 +80,15 @@ abstract class BaseRoute
 
     /**
      * @param string
+     * @return void
      */
-    public function setMethod(string $method): self
+    public function setMethod(string $method): void
     {
         if (!in_array(strtoupper($method), $this->getAcceptedMethods())) {
             throw new \InvalidArgumentException("{$method} is not a valid method");
         }
 
         $this->method = strtoupper($method);
-        return $this;
     }
 
     /**
@@ -98,14 +98,13 @@ abstract class BaseRoute
     {
         return $this->method;
     }
-    
+
     /**
      * @param string
      */
-    public function setUri(string $uri): self
+    public function setUri(string $uri): void
     {
         $this->uri = $this->filterUri($uri);
-        return $this;
     }
 
     /**
@@ -119,10 +118,9 @@ abstract class BaseRoute
     /**
      * @param array
      */
-    public function setArguments(array $arguments): self
+    public function setArguments(array $arguments): void
     {
         $this->arguments = $arguments;
-        return $this;
     }
 
     /**
@@ -132,11 +130,11 @@ abstract class BaseRoute
     {
         return $this->arguments;
     }
-    
+
     /**
      * @param string|callable
      */
-    public function setHandler($handler): self
+    public function setHandler($handler): void
     {
         if (!\is_callable($handler) && !\is_string($handler)) {
             throw new \InvalidArgumentException('handler should be a callable or a controller@method string');
@@ -147,10 +145,8 @@ abstract class BaseRoute
                 throw new \InvalidArgumentException('handler is not a valid controller@action string');
             }
         }
-   
-        $this->handler = $handler;
 
-        return $this;
+        $this->handler = $handler;
     }
 
     /**

@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Kernel\Http\Routing;
 
 use App\Kernel\Http\Messages\RequestInterface;
-use App\Kernel\Http\Routing\RoutesLoaderInterface;
-use App\Kernel\Http\Exceptions\RouteNotFoundException;
+use App\Kernel\Http\Routing\Contracts\RoutesLoaderContract;
+use App\Kernel\Http\Routing\Exceptions\RouteNotFoundException;
 
-abstract class BaseRouter
+abstract class AbstractRouter
 {
     /**
      * @var array
@@ -15,31 +15,23 @@ abstract class BaseRouter
     private $routesCollection = [];
 
     /**
-     * @var RequestInterface
-     */
-    private $request;
-    
-    /**
      * @param RouteCollection
      */
-    public function loadRoutes(RoutesLoader $routesLoader): void
+    public function loadRoutes(RoutesLoaderContract $routesLoader): void
     {
-        $this->routesCollection = array_merge(
-            $this->getRoutes(),
-            $routesLoader->getRoutes()
-        );
+        $this->routesCollection = $routesLoader->getRoutes();
     }
 
     /**
-     * @param BaseRoute
+     * @param AbstractRoute
      */
-    public function addRoute(BaseRoute $route): void
+    public function addRoute(AbstractRoute $route): void
     {
         $this->routesCollection[] = $route;
     }
 
     /**
-     * @return array<BaseRoute>
+     * @return array<AbstractRoute>
      */
     public function getRoutes(): array
     {
@@ -49,39 +41,41 @@ abstract class BaseRouter
     /**
      * @return void
      */
-    public function dispatch(BaseRoute $route): void
-    {   
+    public function dispatch(AbstractRoute $route): void
+    {
         $handler = $route->getHandler();
 
         if (\is_string($route->getHandler())) {
             list($controller, $method) = explode('@', $handler);
         }
 
-        if (is_callable($handler)) {
+        if (\is_callable($handler)) {
             $handler();
         }
     }
-    
+
     /**
      * @param RequestInterface
+     * @return void
      * @throws RouteNotFoundException
      */
-    public function match(RequestInterface $request): Route
+    public function match(RequestInterface $request): void
     {
         foreach ($this->getRoutes() as $route) {
+
             if ($request->getMethod() !== $route->getMethod()) {
                 continue;
             }
 
             $pattern = sprintf('~^%s$~', $route->getUri());
-            
+
             if (preg_match_all($pattern, $request->getUri(), $matches)) {
                 $route->setArguments($matches[1] ?? []);
-                
                 $this->dispatch($route);
+                return;
             }
         }
 
-        throw new RouteNotFoundException('Route not Found', 404);
+        throw new RouteNotFoundException();
     }
 }

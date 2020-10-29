@@ -63,7 +63,7 @@ class RouteTest extends TestCase
         $this->route->setHandler(function () {
             return 1;
         });
-        $this->assertInstanceOf('Closure', $this->route->getHandler());
+        $this->assertInstanceOf(\Closure::class, $this->route->getHandler());
     }
     
     public function test_if_handler_is_a_valid_controller_method_string()
