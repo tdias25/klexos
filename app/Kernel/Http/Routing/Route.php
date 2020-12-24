@@ -2,6 +2,6 @@
 
 namespace App\Kernel\Http\Routing;
 
-class Route extends BaseRoute
+class Route extends AbstractRoute
 {
 }

@@ -2,6 +2,7 @@
 
 namespace App\Kernel\Http\Routing\Loaders;
 
+use App\Kernel\Http\Routing\AbstractRoute;
 use App\Kernel\Http\Routing\Contracts\RoutesLoaderContract;
 
 class ArrayRoutesLoader implements RoutesLoaderContract
@@ -10,15 +11,18 @@ class ArrayRoutesLoader implements RoutesLoaderContract
      * @var array<BaseRoute>
      */
     private $routes = [];
+    private array $rawRoutes;
 
-    public function __construct(string $file)
+    public function __construct(array $rawRoutes, RouteCollectionInterface $routeCollection)
     {
-        $this->loadRoutes($file);
+        $this->makeRouteCollection($rawRoutes);
     }
 
-    public function loadRoutes(string $file): void
+    public function makeRouteCollection(array $routes): void
     {
-        $this->routes = require base_path($file);
+        foreach ($routes as $route) {
+
+        }
     }
 
     public function getRoutes(): RoutesCollection

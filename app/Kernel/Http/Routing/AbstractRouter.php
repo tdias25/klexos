@@ -15,14 +15,6 @@ abstract class AbstractRouter
     private $routesCollection = [];
 
     /**
-     * @param RouteCollection
-     */
-    public function loadRoutes(RoutesLoaderContract $routesLoader): void
-    {
-        $this->routesCollection = $routesLoader->getRoutes();
-    }
-
-    /**
      * @param AbstractRoute
      */
     public function addRoute(AbstractRoute $route): void
@@ -41,7 +33,7 @@ abstract class AbstractRouter
     /**
      * @return void
      */
-    public function dispatch(AbstractRoute $route): void
+    public function dispatch(AbstractRoute $route): ?AbstractResponse
     {
         $handler = $route->getHandler();
 
