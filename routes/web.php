@@ -7,10 +7,7 @@ return [
         'middlewares' => [
 //            \App\Http\Middlewares\VerifyIfHeaderHasContentType::class
         ],
-        'allowed_methods' => ['GET'],
-        'validation_rules' => [
-//            \App\Http\Request\Validation\TestValidation::class,
-        ],
+        'methods' => ['GET'],
         'handler' => '\App\Http\Controllers\TestController@Index'
     ]
 ];

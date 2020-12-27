@@ -6,3 +6,4 @@ access.log
 error.log
 .phpunit.result.cache
 .php_cs.cache
+.idea

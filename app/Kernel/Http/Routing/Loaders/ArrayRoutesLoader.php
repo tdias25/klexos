@@ -8,26 +8,17 @@ use App\Kernel\Http\Routing\Contracts\RoutesLoaderContract;
 class ArrayRoutesLoader implements RoutesLoaderContract
 {
     /**
-     * @var array<BaseRoute>
+     * @var array<AbstractRoute>
      */
-    private $routes = [];
-    private array $rawRoutes;
+    private array $routes = [];
+    private array $arrayRoutes = [];
 
-    public function __construct(array $rawRoutes, RouteCollectionInterface $routeCollection)
+    public function __construct(array $arrayRoutes)
     {
-        $this->makeRouteCollection($rawRoutes);
     }
 
-    public function makeRouteCollection(array $routes): void
+    public function getRoutes(): array
     {
-        foreach ($routes as $route) {
-
-        }
-    }
-
-    public function getRoutes(): RoutesCollection
-    {
-        // return $this->routes;
-        return new RoutesCollection($this->routes);
+        return [];
     }
 }
