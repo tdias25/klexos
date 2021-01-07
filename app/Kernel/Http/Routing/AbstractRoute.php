@@ -15,7 +15,7 @@ abstract class AbstractRoute
     /**
      * @var array
      */
-    const URI_MATCH_TYPES = [
+    const PATH_MATCH_TYPES = [
         '[i]' => '([0-9]+)',
         '[a]' => '([0-9A-Za-z]+)',
     ];
@@ -34,7 +34,7 @@ abstract class AbstractRoute
      * @var string
      */
 
-    private $uri;
+    private $path;
     /**
      * @var array
      */
@@ -48,9 +48,9 @@ abstract class AbstractRoute
     /**
      * @return array
      */
-    private function getUriMatchTypes(): array
+    private function getPathMatchTypes(): array
     {
-        return self::URI_MATCH_TYPES;
+        return self::PATH_MATCH_TYPES;
     }
 
     /**
@@ -102,17 +102,17 @@ abstract class AbstractRoute
     /**
      * @param string
      */
-    public function setUri(string $uri): void
+    public function setPath(string $path): void
     {
-        $this->uri = $this->filterUri($uri);
+        $this->path = $this->filterPath($path);
     }
 
     /**
      * @return string
      */
-    public function getUri(): string
+    public function getPath(): string
     {
-        return $this->uri;
+        return $this->path;
     }
 
     /**
@@ -124,7 +124,7 @@ abstract class AbstractRoute
     }
 
     /**
-     *
+     * @return array
      */
     public function getArguments(): array
     {
@@ -142,7 +142,7 @@ abstract class AbstractRoute
 
         if (is_string($handler)) {
             if (!preg_match('~[\D][\w]+\@[\D][\w]+~', $handler)) {
-                throw new \InvalidArgumentException('handler is not a valid controller@action string');
+                throw new \InvalidArgumentException('handler is not a valid class@method string');
             }
         }
 
@@ -160,12 +160,12 @@ abstract class AbstractRoute
     /**
      * @param string
      */
-    public function filterUri(string $uri): string
+    public function filterPath(string $path): string
     {
-        foreach ($this->getUriMatchTypes() as $key => $pattern) {
-            $uri = str_replace($key, $pattern, $uri);
+        foreach ($this->getPathMatchTypes() as $key => $pattern) {
+            $path = str_replace($key, $pattern, $path);
         }
 
-        return $uri;
+        return $path;
     }
 }
