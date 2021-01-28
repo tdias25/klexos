@@ -10,16 +10,16 @@ use App\Kernel\Http\Routing\Exceptions\RouteNotFoundException;
 abstract class AbstractRouter
 {
     /**
-     * @var array
+     * @param array<AbstractRoute>
      */
-    private $routesCollection = [];
+    private $routes = [];
 
     /**
      * @param AbstractRoute
      */
     public function addRoute(AbstractRoute $route): void
     {
-        $this->routesCollection[] = $route;
+        $this->routes[] = $route;
     }
 
     /**
@@ -27,7 +27,7 @@ abstract class AbstractRouter
      */
     public function getRoutes(): array
     {
-        return $this->routesCollection;
+        return $this->routes;
     }
 
     /**

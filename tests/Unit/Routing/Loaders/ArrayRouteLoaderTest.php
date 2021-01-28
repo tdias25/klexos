@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Tests\Unit\Routing\Loaders;
+
 use App\Kernel\Http\Routing\AbstractRoute;
 use App\Kernel\Http\Routing\Contracts\RoutesLoaderContract;
 use App\Kernel\Http\Routing\Loaders\ArrayRoutesLoader;
@@ -28,7 +30,7 @@ class ArrayRouteLoaderTest extends TestCase
         ];
     }
 
-    public function testArrayRoutesLoaderShouldBeAInstanceOfRoutesLoader()
+    public function testArrayRoutesLoaderShouldBeAnInstanceOfRoutesLoader()
     {
         $arrayRoutesLoader = new ArrayRoutesLoader(
             $this->sampleArrayRoutes
